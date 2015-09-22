@@ -1,0 +1,72 @@
+
+CONTENTS OF THIS FILE
+---------------------
+
+ * Introduction
+ * Requirements
+ * Installation
+ * Configuration
+ * Troubleshooting
+
+
+Introduction
+---------------------
+Hello, and Welcome! This project was started on a lonely night when the author didn't want to set up his own C project. He already knew a lot of the basics that he wanted in the .h and .c files, and he knew a Makefile would be useful, but he wanted an easy way to tell the computer to do it for him. Hence this Python script!
+
+He realized a few perks immediately: 
+ - he wouldn't have to go and figure out all the places he forgot semi-colons, 
+ - he wouldn't need to keep switching files every time he wanted to tweak the function definitions,
+ - he wouldn't have to google "what the fuck is in a makefile" (although this hasn't been fully implemented yet), and
+ - he would have an easy outline of the basic project even before he started
+
+Of course, there would be drawbacks. He's not sure what they are yet, but they're probably out there. Hiding, perhaps?
+Arguably, learning more about python took some effort, but he enjoyed that and already knew the basics so that wasn't hard or unpleasant, so not a drawback. 
+
+Anyway, that's the jist of this project, I hope you enjoy! You can email the bloke responsible for this at devin.wakefield@gmail.com if you have a wild opninion that yearns to be free.
+
+
+Requirements
+--------------------
+Python! This was tested with Python 2.7.6, but hopefully it works on other pythons like 2.7.10? Python 3.* might not work with this, but the author has no idea.
+It also uses json, and the author is pretty sure that Python has that with the magic of import json.
+
+
+Installation
+--------------------
+If you have python installed, and /usr/bin/python is where you hide your python, you just need to make sure it's been cmod'd to +x:
+chmod +x start_C_project.py
+
+And then you have to make your project.json file but that's not really an installation, but rather a use case.
+
+
+Configuration
+--------------------
+The JSON file!!!
+
+if you do ./start_C_project.py --help there's some information about how to setup your json file. Here's some more.
+
+The JSON file is:
+An object containing 2 entries:
+		"makefile" : { }
+		"files" : [{}, {}]
+
+ - The "makefile" entry is an object so far with 2 arguments. First, you decide what compiler you want ("CC"). 
+		Second, you decide what flags you want to run with the compiler ("CFLAGS"). 
+		That's where it's at right now. Hopefully in future it'll get snazzier. See the example.json for the latest example you can use.
+
+ - The "files" entry is simply an array of objects. Each object describes a .c and .h file. Here are the attributes and their types:
+			"name" 					: "What you want the .h and .c files to be named. Don't include spaces.",
+			"public"				: ["The", ".h", "function", "definitions", "go", "in", "here"],
+			"private"				: ["The", ".c", "function", "definitions", "go", "in", "here"],
+			"dependencies"	: ["The", "#include", "stuff", "goes", "here", "but", "without", "the", "#includes"]
+
+		And that's it! A few notes: 
+			- If the "public" entry is empty, a .h file will not be created (for example if you don't want a main.h).
+			- The .h file is automatically put in the .c file as a #include, unless there is no .h file.
+			- If you want <> braces in your include, then put them in. Otherwise, it defaults to "quotation_marks.h"
+			- In case it wasn't clear, you just need to put "<stdio.h>" or "tree.h", not the whole "#include <stdlib.h>" in the dependency list.
+
+
+Troubleshooting
+--------------------
+I LITERALLY just started this tonight, so your guess is probably as good as mine. Feel free to mess with the python file to your liking. So far it's pretty basic, but it works (sans the makefile).
