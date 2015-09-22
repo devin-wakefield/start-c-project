@@ -1,14 +1,27 @@
-[
 {
-	"name" : "test",
+	"makefile" : 
+	{
+		"CC" : "gcc",
+		"CFLAGS" : "-g -Wall"
+	},
+	"files" :	[
+	{
+		"name" : "test",
 
-	"public"				: ["void test(void)",
-										"void fart(void)",
-										"int plus(int a, int b)"],
+		"public"				: ["void test(void)",
+		"void fart(void)",
+		"int plus(int a, int b)"],
 
-	"private" 			: ["int help(int* fart)",
-										"float fuck_you(float b)"],
+		"private" 			: ["int help(int* fart)",
+		"float fuck_you(float b)"],
 
-	"dependencies"	:	["<stdio.h>", "fuck.h"]
+		"dependencies"	:	["<stdio.h>", "fuck.h"]
+	},
+	{
+		"name" : "main",
+		"public" : [],
+		"private" : ["int main(int argc, char** argv)"],
+		"dependencies" : ["<stdlib.h>", "test.h"]
+	}
+	]
 }
-]

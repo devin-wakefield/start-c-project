@@ -9,8 +9,8 @@
 
 """How to Use the C Project Starter!
 
-The purpose of this project is to help you quickly and easily set up function definitions and a Makefile without stabbing your neighbors in frustration as you forget semi-colons all over the place. No, I haven't done that yet, and I don't want to. Hence, this project.
-
+The purpose of this project is to help you quickly and easily set up function definitions and a Makefile without stabbing your neighbors in frustration as you forget semi-colons all over the place. 
+No, I haven't done that yet, and I don't want to. Hence, this project.
 
 Usage:
 	start_C_project [filename.json]
@@ -57,22 +57,22 @@ def read_json(filename):
 def write_h_file(data):
 	fname = data["name"] + ".h"
 	
-	with open(fname, 'a') as h_file:
-		#write #includes
-		incl = "#include "
-		for dep in data["dependencies"]:
-			line = incl
-			if dep[0] != '<':
-			line = incl + (dep if dep[0] == '<' else "\"" + dep + "\"") + "\n"
-			h_file.write(line)
+	if len(data["public"]) != 0:
+		with open(fname, 'a') as h_file:
+			#write #includes
+			incl = "#include "
+			for dep in data["dependencies"]:
+				line = incl
+				line = incl + (dep if dep[0] == '<' else "\"" + dep + "\"") + "\n"
+				h_file.write(line)
 
-		h_file.write("\n\n")
+			h_file.write("\n\n")
 
-		for func_def in data["private"]:
-			line = func_def + ";\n" #hahaha the whole point of this
-			h_file.write(line)
+			for func_def in data["public"]:
+				line = func_def + ";\n" #hahaha the whole point of this
+				h_file.write(line)
 
-		h_file.write("\n")
+			h_file.write("\n")
 
 	return
 
@@ -81,13 +81,14 @@ def write_c_file(data):
 
 	with open(fname, 'a') as c_file:
 
-		#all dependencies for the .c file should be in the .h file. This then includes that.
-		incl = "#include \"" + data["name"] + ".h\"" + "\n"
-		c_file.write(incl)
+		#all dependencies for the .c file should be in the .h file. This then includes that IF we actually made a .h file.
+		if len(data["public"]) !=0:
+			incl = "#include \"" + data["name"] + ".h\"" + "\n"
+			c_file.write(incl)
 
 		c_file.write("\n\n")
 
-		for func_def in data["public"]:
+		for func_def in data["private"]:
 			line = func_def + ";\n" #yayyyy I don't have to do it now :)
 			c_file.write(line)
 
@@ -99,7 +100,8 @@ def write_makefile(files):
 	return
 
 def setup_project(json_filename):
-	files = read_json(json_filename)
+	data = read_json(json_filename)
+	files = data["files"]
 	for a_file in files:
 		write_h_file(a_file)
 		write_c_file(a_file)
