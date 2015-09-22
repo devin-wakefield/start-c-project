@@ -48,26 +48,30 @@ import sys
 import getopt
 
 
+#This basically makes sure that filename is actually a file, and then opens it with json
 def read_json(filename):
 	assert os.path.isfile(filename)
 	with open(filename) as data_file:
 		data = json.load(data_file)
 		return data
 
+#This takes in a file json object (as described in readme) and makes the appropriate .h file.
 def write_h_file(data):
 	fname = data["name"] + ".h"
 	
+	#if public is empty, then do not make .h file.
 	if len(data["public"]) != 0:
 		with open(fname, 'a') as h_file:
-			#write #includes
+
+			#write #includes to file
 			incl = "#include "
 			for dep in data["dependencies"]:
-				line = incl
 				line = incl + (dep if dep[0] == '<' else "\"" + dep + "\"") + "\n"
 				h_file.write(line)
 
 			h_file.write("\n\n")
 
+			#write the function definitions to the file
 			for func_def in data["public"]:
 				line = func_def + ";\n" #hahaha the whole point of this
 				h_file.write(line)
@@ -76,18 +80,26 @@ def write_h_file(data):
 
 	return
 
+#Write a .c file from a json file object (as described in readme).
 def write_c_file(data):
 	fname = data["name"] + ".c"
 
 	with open(fname, 'a') as c_file:
 
-		#all dependencies for the .c file should be in the .h file. This then includes that IF we actually made a .h file.
+		#all dependencies for the .c file should be in the .h file. This then includes that IF we actually made a .h file. 
 		if len(data["public"]) !=0:
 			incl = "#include \"" + data["name"] + ".h\"" + "\n"
 			c_file.write(incl)
+		else:
+			#since there was no .h file, dependencies have to be put in here. I'm not assuming there are no dependencies, because main.c might need stdio.h, for example
+			incl = "#include "
+			for dep in data["dependencies"]:
+				line = incl + (dep if dep[0] == '<' else "\""  dep "\"") + "\n"
+				c_file.write(line)
 
 		c_file.write("\n\n")
 
+		#write the function definitions
 		for func_def in data["private"]:
 			line = func_def + ";\n" #yayyyy I don't have to do it now :)
 			c_file.write(line)
@@ -96,9 +108,11 @@ def write_c_file(data):
 
 	return
 
+#so far does nothing.
 def write_makefile(files):
 	return
 
+#basically directs traffic of the program. 
 def setup_project(json_filename):
 	data = read_json(json_filename)
 	files = data["files"]
@@ -121,13 +135,16 @@ def main(argv=None):
 	try:
 		try:
 			opts, args = getopt.getopt(argv[1:], "h", ["help"])
+			#process options (there's only 1 legal one)
 			for o, a in opts:
+				#print help
 				if o in ("-h", "--help"):
 					print __doc__
 					sys.exit(0)
-			# process arguments
+
+			# process arguments (again, only 1 legal one atm)
 			for arg in args:
-				process(arg) # process() is defined elsewhere
+				process(arg) 
 		except getopt.error, msg:
 			raise Usage(msg)
 
