@@ -128,12 +128,18 @@ def write_makefile(data):
 
 			deps[a_file["name"]] = make_deps
 		
-		default = ": "
+		#doing this manually because it's a little different...
+		object_names = reduce(lambda x, y: x + " " + y + ".o", deps.keys(), "")
+		default = "\ndefault: " + object_names + "\n\t$(CC) $(CFLAGS) -o $(TARGET) " + object_names + "\n\n"
+		makefile.write(default)
+
 		for dep in deps:
 			line = dep + ".o: " + reduce(lambda x, y: x + " " + y[:-1] + "o", deps[dep], "") + "\n"
-			line += "\t$(CC) $(CFLAGS) " + dep + ".c\n\n"
+			line += "\t$(CC) $(CFLAGS) -c " + dep + ".c\n\n"
 			makefile.write(line)
 
+		clean = "clean: \n\t$(RM) main *.o *~\n"
+		makefile.write(clean)
 
 #			CC_line = "CC = " + makeObj["CC"] + "\n"
 #			makefile.write(CC_line)
