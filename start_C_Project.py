@@ -94,7 +94,7 @@ def write_c_file(data):
 			#since there was no .h file, dependencies have to be put in here. I'm not assuming there are no dependencies, because main.c might need stdio.h, for example
 			incl = "#include "
 			for dep in data["dependencies"]:
-				line = incl + (dep if dep[0] == '<' else "\""  dep "\"") + "\n"
+				line = incl + (dep if dep[0] == '<' else "\""  + dep + "\"") + "\n"
 				c_file.write(line)
 
 		c_file.write("\n\n")
@@ -108,8 +108,43 @@ def write_c_file(data):
 
 	return
 
-#so far does nothing.
-def write_makefile(files):
+#on implementation, it could be more efficient to build the makefile string while writing the .h and .c files. 
+#However, I'll have to implement it separately anyway if I want to have the option of JUST making a makefile... I think I want that? will decide later.
+def write_makefile(data):
+	with open("Makefile", 'a') as makefile:
+		#write flags, like CC = gcc or w/e
+		makeObj = data["Makefile"]
+		for key in makeObj:
+			line = key + " = " + makeObj[key] + "\n"
+			makefile.write(line)
+
+		files = data["files"]
+		deps = {}
+		for a_file in files:
+			make_deps = []
+			for elt in a_file["dependencies"]:
+				if elt[0] != '<':
+					make_deps.append(elt)
+
+			deps[a_file["name"]] = make_deps
+		
+		default = ": "
+		for dep in deps:
+			line = dep + ".o: " + reduce(lambda x, y: x + " " + y[:-1] + "o", deps[dep], "") + "\n"
+			line += "\t$(CC) $(CFLAGS) " + dep + ".c\n\n"
+			makefile.write(line)
+
+
+#			CC_line = "CC = " + makeObj["CC"] + "\n"
+#			makefile.write(CC_line)
+#
+#			c_flags = "CFLAGS = " makeObj["CFLAGS"] + "\n"
+#			makefile.write(c_flags)
+#
+#			target = "TARGET = " makeObj["TARGET"] + "\n"
+#			makefile.write(target)
+
+
 	return
 
 #basically directs traffic of the program. 
@@ -120,7 +155,7 @@ def setup_project(json_filename):
 		write_h_file(a_file)
 		write_c_file(a_file)
 
-	write_makefile(files)
+	write_makefile(data)
 
 class Usage(Exception):
 	def __init__(self, msg):

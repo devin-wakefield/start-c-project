@@ -1,27 +1,41 @@
 {
-	"makefile" : 
+	"Makefile" : 
 	{
 		"CC" : "gcc",
-		"CFLAGS" : "-g -Wall"
+		"CFLAGS" : "-g -Wall",
+		"TARGET" : "test"
 	},
 	"files" :	[
 	{
 		"name" : "test",
 
 		"public"				: ["void test(void)",
-											"void fart(void)",
+											"void build(void)",
 											"int plus(int a, int b)"],
 
-		"private" 			: ["int help(int* fart)",
+		"private" 			: ["int help(int* problem)",
 											"float fuck_you(float b)"],
 
-		"dependencies"	:	["<stdio.h>", "fuck.h"]
+		"dependencies"	:	["<stdio.h>", "cataclysm.h"]
+	},
+	{
+		"name": "cataclysm",
+
+		"public"				:	["void destroy_all()",
+											"int add_up_cost()",
+											"float cost_of_meteor()"],
+
+		"private"				: ["int meteor()",
+											"int earthquake()",
+											"int zombie_shark_nado()"],
+
+		"dependencies"	:	["<stdlib.h>"]
 	},
 	{
 		"name" : "main",
 		"public" : [],
 		"private" : ["int main(int argc, char** argv)"],
-		"dependencies" : ["<stdlib.h>", "test.h"]
+		"dependencies" : ["<stdlib.h>", "test.h", "cataclysm.h"]
 	}
 	]
 }
