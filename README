@@ -16,11 +16,11 @@ Hello, and Welcome! This project was started on a lonely night when the author d
 He realized a few perks immediately: 
  - he wouldn't have to go and figure out all the places he forgot semi-colons, 
  - he wouldn't need to keep switching files every time he wanted to tweak the function definitions,
- - he wouldn't have to google "what the fuck is in a makefile" (although this hasn't been fully implemented yet), and
+ - he wouldn't have to google "what the fuck is in a makefile", and
  - he would have an easy outline of the basic project even before he started
 
 Of course, there would be drawbacks. He's not sure what they are yet, but they're probably out there. Hiding, perhaps?
-Arguably, learning more about python took some effort, but he enjoyed that and already knew the basics so that wasn't hard or unpleasant, so not a drawback. 
+Arguably, learning more about python took some effort, but he enjoyed that and already knew the basics so that wasn't hard or unpleasant, so actually not a drawback. 
 
 Anyway, that's the jist of this project, I hope you enjoy! You can email the bloke responsible for this at devin.wakefield@gmail.com if you have a wild opninion that yearns to be free.
 
@@ -50,8 +50,10 @@ An object containing 2 entries:
 		"makefile" : { }
 		"files" : [{}, {}]
 
- - The "makefile" entry is an object so far with 2 arguments. First, you decide what compiler you want ("CC"). 
+ - The "makefile" entry is an object so far with 3 arguments. First, you decide what compiler you want ("CC"). 
 		Second, you decide what flags you want to run with the compiler ("CFLAGS"). 
+		Third, you can decide what the thing is called at the end ("TARGET"). 
+		So far this doesn't look to see if any of these flags are missing, so if it's missing in the json, they'll still be used in the makefile, and the makefile will break :(
 		That's where it's at right now. Hopefully in future it'll get snazzier. See the example.json for the latest example you can use.
 
  - The "files" entry is simply an array of objects. Each object describes a .c and .h file. Here are the attributes and their types:
@@ -59,14 +61,16 @@ An object containing 2 entries:
 			"public"				: ["The", ".h", "function", "definitions", "go", "in", "here"],
 			"private"				: ["The", ".c", "function", "definitions", "go", "in", "here"],
 			"dependencies"	: ["The", "#include", "stuff", "goes", "here", "but", "without", "the", "#includes"]
+			Look in the example.json file to see how exactly it should look.
 
 		And that's it! A few notes: 
 			- If the "public" entry is empty, a .h file will not be created (for example if you don't want a main.h).
 			- The .h file is automatically put in the .c file as a #include, unless there is no .h file.
 			- If you want <> braces in your include, then put them in. Otherwise, it defaults to "quotation_marks.h"
 			- In case it wasn't clear, you just need to put "<stdio.h>" or "tree.h", not the whole "#include <stdlib.h>" in the dependency list.
+			- Also, if you have an entry in the include and it doesn't have the "<>" then that file will be given a build definition in the Makefile. 
 
 
 Troubleshooting
 --------------------
-I LITERALLY just started this tonight, so your guess is probably as good as mine. Feel free to mess with the python file to your liking. So far it's pretty basic, but it works (sans the makefile).
+I LITERALLY just started this tonight, so your guess is probably as good as mine. Feel free to mess with the python file to your liking. So far it's pretty basic, but it works.
